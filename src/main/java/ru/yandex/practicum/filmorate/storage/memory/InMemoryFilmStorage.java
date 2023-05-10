@@ -4,11 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.validator.FilmValidator;
 
 import java.util.*;
-
-import static ru.yandex.practicum.filmorate.validator.FilmValidator.validateFilm;
 
 @Slf4j
 @Component
