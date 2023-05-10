@@ -10,10 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static ru.yandex.practicum.filmorate.validator.UserValidator.validateUser;
+
 @Slf4j
 @Component
 public class InMemoryUserStorage implements UserStorage {
-    private final Map<Long, User> storageUsers = new HashMap<>();
+    private final Map<Long, User> storageUsers = new HashMap();
     private long uniqId;
 
     private long generateId() {
@@ -28,11 +30,13 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getById(long id) {
-        if (storageUsers.get(id) != null) {
+        if (storageUsers.containsKey(id)) {
             log.info("Запрошен пользователь с id '{}'", id);
             return storageUsers.get(id);
+        } else {
+            validateUser(null);
+            return null;
         }
-        return null;
     }
 
     @Override

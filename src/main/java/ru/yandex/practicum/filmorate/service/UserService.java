@@ -51,21 +51,11 @@ public class UserService {
     }
 
     public User getUserById(@PathVariable long id) {
-        getNotFoundUserById(id);
         return userStorage.getById(id);
     }
 
     public User deleteUserById(@PathVariable long id) {
-        getNotFoundUserById(id);
         return userStorage.delete(id);
-    }
-
-    public long getNotFoundUserById(Long id) {
-        if (!getUsers().contains(id)) {
-            log.warn("Пользователь не найден. Передан отсутствующий id пользователя");
-            throw new ObjectNotFoundException("Пользователь", id);
-        }
-        return id;
     }
 
     public void addFriend(long id, long friendId) {
