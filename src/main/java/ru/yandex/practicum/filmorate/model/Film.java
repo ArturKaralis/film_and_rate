@@ -40,6 +40,7 @@ public class Film {
         this.releaseDate = releaseDate;
         this.duration = duration;
     }
+
     public void setLikes(Set<Long> likes) {
         this.likes = likes;
     }
