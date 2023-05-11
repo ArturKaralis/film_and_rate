@@ -22,7 +22,6 @@ public class FilmController {
         }
 
         @PostMapping
-        @ResponseStatus(HttpStatus.CREATED)
         public Film createFilm(@Valid @RequestBody Film film) {
             log.debug("Создается фильм: {}", film);
             return filmService.createFilm(film);
@@ -66,7 +65,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public Collection<Film> getTopFilms(@RequestParam(required = false) Integer count) {
+    public Collection<Film> getTopFilms(@RequestParam(required = false, defaultValue = "10") int count) {
         log.info("Получение списка первых {} фильмов", count);
         return filmService.getTopFilms(count);
     }

@@ -12,7 +12,7 @@ import java.util.*;
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
 
-    private final Map<Long, Film> storageFilms = new HashMap<>();
+    private final Map<Long, Film> storageFilms = new HashMap();
     private long uniqId;
 
     private long generateId() {
@@ -36,10 +36,13 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film create(Film film) {
+         if (film != null) {
             film.setId(generateId());
-            storageFilms.put(uniqId, film);
+            storageFilms.put(film.getId(), film);
             log.info("Фильм '{}' с id '{}' был успешно добавлен.", film.getName(), film.getId());
             return film;
+         }
+         return null;
     }
 
     @Override

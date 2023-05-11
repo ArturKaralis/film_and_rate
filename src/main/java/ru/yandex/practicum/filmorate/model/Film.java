@@ -24,15 +24,6 @@ public class Film {
 
     private long rate;
 
-    public Film(long id, String name, String description, LocalDate releaseDate, double duration, long rate) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.rate = rate;
-    }
-
     public Film(long id, String name, String description, LocalDate releaseDate, double duration) {
         this.id = id;
         this.name = name;
@@ -41,15 +32,8 @@ public class Film {
         this.duration = duration;
     }
 
-    public void setLikes(Set<Long> likes) {
-        this.likes = likes;
-    }
-
     public Set<Long> getLikes() {
         return likes;
     }
 
-    public long getRating() {
-        return rate;
-    }
 }

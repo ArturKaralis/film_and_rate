@@ -28,8 +28,9 @@ public class FilmService {
         return filmStorage.getAll();
     }
 
-    public Film createFilm(Film film) {
+    public Film createFilm(@RequestBody @Valid Film film) {
         validateFilm(film);
+        log.info("Фильм '{}' с id '{}' был успешно добавлен.", film.getName(), film.getId());
         return filmStorage.create(film);
     }
 
