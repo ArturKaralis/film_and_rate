@@ -3,8 +3,10 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import ru.yandex.practicum.filmorate.exception.EmptyObjectException;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -99,7 +101,7 @@ public class UserService {
         User user = userStorage.getById(id);
         User friend = userStorage.getById(friendId);
         if (user == null || friend == null) {
-            throw new javax.validation.ValidationException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден");
+            throw new ObjectNotFoundException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден", id);
         }
         Set<Long> friendsUser = user.getFriends();
         Set<Long> friendsFriend = friend.getFriends();
