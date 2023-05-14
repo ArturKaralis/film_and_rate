@@ -52,14 +52,14 @@ public class ExceptionsHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> countErrorPopular (ConstraintViolationException ex){
+    public ResponseEntity<String> countErrorPopular(ConstraintViolationException ex) {
         log.error("400 - передано некорректное значение рейтинга", ex);
     return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> countErrorPopular (MethodArgumentNotValidException ex){
+    public ResponseEntity<String> countErrorPopular(MethodArgumentNotValidException ex) {
         log.error("400 - ошибка валидации данных", ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
