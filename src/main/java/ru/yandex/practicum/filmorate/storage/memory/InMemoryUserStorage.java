@@ -41,10 +41,10 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User create(User user) {
         if (user != null) {
-        user.setId(generateId());
-        storageUsers.put(user.getId(), user);
-        log.info("Пользователь '{}' с id '{}' был успешно добавлен.", user.getName(), user.getId());
-        return user;
+            user.setId(generateId());
+            storageUsers.put(user.getId(), user);
+            log.info("Пользователь '{}' с id '{}' был успешно добавлен.", user.getName(), user.getId());
+            return user;
         }
         return null;
     }

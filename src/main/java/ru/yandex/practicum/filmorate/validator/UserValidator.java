@@ -13,10 +13,10 @@ public class UserValidator {
     private static LocalDate currentDate = LocalDate.now();
 
     public static void validateUser(User user) {
-        if (user == null) {
+        /*if (user == null) {
             log.warn("Валидация не пройдена");
             throw new ValidationException("Пользователь не передан");
-        }
+        }*/
         if (!StringUtils.hasText(user.getEmail()) || !user.getEmail().contains("@")) {
             log.warn("Валидация не пройдена");
             throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @");

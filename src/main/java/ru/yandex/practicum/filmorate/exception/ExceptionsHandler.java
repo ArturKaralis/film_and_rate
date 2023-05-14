@@ -2,16 +2,19 @@ package ru.yandex.practicum.filmorate.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
-@ResponseStatus(HttpStatus.BAD_REQUEST)
 public class ExceptionsHandler {
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleIncorrectDate(DateValidationException exception) {
@@ -45,5 +48,19 @@ public class ExceptionsHandler {
     public Map<String, String> handleEmptyObject(EmptyObjectException exception) {
         log.error("404 - Передаваемый объект пуст", exception);
         return Map.of("Переданный объект пуст", exception.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> countErrorPopular (ConstraintViolationException ex){
+        log.error("400 - передано некорректное значение рейтинга", ex);
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> countErrorPopular (MethodArgumentNotValidException ex){
+        log.error("400 - ошибка валидации данных", ex);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

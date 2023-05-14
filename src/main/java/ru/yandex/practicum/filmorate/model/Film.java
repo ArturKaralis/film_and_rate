@@ -9,12 +9,13 @@ import java.util.Set;
 
 @Data
 public class Film {
-    @NotNull
+
     @PositiveOrZero
     private long id;
     @NotBlank(message = "Название фильма не может быть null")
     private String name;
     @Size(max = 200)
+    @NotNull
     private String description;
     private LocalDate releaseDate;
     @Positive
@@ -22,7 +23,9 @@ public class Film {
 
     private Set<Long> likes = new HashSet<>();
 
-    private long rate;
+    public int getRate() {
+        return likes.size();
+    }
 
     public Film(long id, String name, String description, LocalDate releaseDate, double duration) {
         this.id = id;

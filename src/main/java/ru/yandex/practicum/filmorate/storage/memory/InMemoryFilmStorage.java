@@ -58,8 +58,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film delete(long id) {
         if (storageFilms.get(id) != null) {
+            Film film = storageFilms.remove(id);
             log.info("Запрошено удаление фильма с id '{}'", id);
-            return storageFilms.remove(id);
+            return film;
         }
         return null;
     }

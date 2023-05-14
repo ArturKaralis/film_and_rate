@@ -3,8 +3,6 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -33,13 +31,13 @@ public class UserService {
         return userStorage.getAll();
     }
 
-    public User createUser(@RequestBody @Valid User user) {
+    public User createUser(@Valid User user) {
         validateUser(user);
         log.info("Пользователь '{}' с id '{}' был успешно добавлен.", user.getName(), user.getId());
         return userStorage.create(user);
     }
 
-    public User updateUser(@RequestBody @Valid User user) {
+    public User updateUser(@Valid User user) {
 
         if (userStorage.getById(user.getId()) == null) {
             log.warn("Запрос на обновление пользователя с id '{}' отклонён. Он отсутствует в списке пользователей.",
@@ -50,11 +48,11 @@ public class UserService {
         return userStorage.update(user);
     }
 
-    public User getUserById(@PathVariable long id) {
+    public User getUserById(long id) {
         return userStorage.getById(id);
     }
 
-    public User deleteUserById(@PathVariable long id) {
+    public User deleteUserById(long id) {
         return userStorage.delete(id);
     }
 

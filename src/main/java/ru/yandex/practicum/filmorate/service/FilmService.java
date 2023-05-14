@@ -3,8 +3,6 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
@@ -28,13 +26,13 @@ public class FilmService {
         return filmStorage.getAll();
     }
 
-    public Film createFilm(@RequestBody @Valid Film film) {
+    public Film createFilm(@Valid Film film) {
         validateFilm(film);
         log.info("Фильм '{}' с id '{}' был успешно добавлен.", film.getName(), film.getId());
         return filmStorage.create(film);
     }
 
-    public Film updateFilm(@RequestBody @Valid Film film) {
+    public Film updateFilm(@Valid Film film) {
         filmStorage.update(film);
         if (filmStorage.getById(film.getId()) == null) {
             log.warn("Запрос на обновление фильма с id '{}' отклонён. Он отсутствует в списке фильмов.", film.getId());
@@ -44,7 +42,7 @@ public class FilmService {
         return film;
     }
 
-    public Film getFilmById(@PathVariable long id) {
+    public Film getFilmById(long id) {
         if (filmStorage.getById(id) != null) {
             return filmStorage.getById(id);
         } else {
@@ -53,7 +51,7 @@ public class FilmService {
         }
     }
 
-    public Film deleteFilmById(@PathVariable long id) {
+    public Film deleteFilmById(long id) {
         if (filmStorage.delete(id) != null) {
             return filmStorage.delete(id);
         } else {
@@ -85,13 +83,11 @@ public class FilmService {
 
     public List<Film> getTopFilms(Integer count) {
         List<Film> allFilms = filmStorage.getAll();
-        if (count == 10) {
+        /*if (count == 10) {
             return allFilms.stream().limit(10).collect(Collectors.toList());
-        }
+        }*/
         return allFilms.stream()
-                .filter(f -> null != f.getLikes())
-                .filter(f -> !f.getLikes().isEmpty())
-                .sorted((a, b) -> b.getLikes().size() - a.getLikes().size())
+                .sorted((a, b) -> b.getRate() - a.getRate())
                 .limit(count)
                 .collect(Collectors.toList());
     }

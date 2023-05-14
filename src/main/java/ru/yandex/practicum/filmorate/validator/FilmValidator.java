@@ -13,10 +13,11 @@ public class FilmValidator {
     private static LocalDate dateRelease = LocalDate.of(1895, 12, 28);
 
     public static void validateFilm(Film film) {
-        if (film == null) {
+        /*if (film == null) {
             log.warn("Валидация не пройдена");
             throw new ValidationException("Фильм не передан");
-        }
+        }*/
+
         if (!StringUtils.hasText(film.getName())) {
             log.warn("Валидация не пройдена");
             throw new ValidationException("Название не может быть пустым");

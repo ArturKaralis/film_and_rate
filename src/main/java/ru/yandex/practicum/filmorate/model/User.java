@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Data
 public class User {
-    @NotNull
+
     @PositiveOrZero
     private long id;
     @Email
@@ -22,6 +22,7 @@ public class User {
     private String login;
     private String name;
     @PastOrPresent
+    @NotNull
     private LocalDate birthday;
     private Set<Long> friends = new HashSet<>();
 
