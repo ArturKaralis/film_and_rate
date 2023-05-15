@@ -13,7 +13,7 @@ public class User {
 
     @PositiveOrZero
     private long id;
-    @Email
+    /*@Email*/
     @NotBlank(message = "Email не может быть null")
     private String email;
     /*@NotBlank(message = "Логин не может быть null")
