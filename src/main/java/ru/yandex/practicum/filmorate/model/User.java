@@ -24,6 +24,7 @@ public class User {
     @PastOrPresent
     @NotNull
     private LocalDate birthday;
+    @JsonIgnore
     private Set<Long> friends = new HashSet<>();
 
         public User(long id, String email, String login, String name, LocalDate birthday) {
