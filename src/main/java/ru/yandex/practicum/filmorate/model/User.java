@@ -16,8 +16,8 @@ public class User {
     @Email
     @NotBlank(message = "Email не может быть null")
     private String email;
-    @NotBlank(message = "Логин не может быть null")
-    /*@Pattern(regexp = "^[a-zA-Z0-9]{4,12}$",
+    /*@NotBlank(message = "Логин не может быть null")
+    @Pattern(regexp = "^[a-zA-Z0-9]{4,12}$",
             message = "Логин должен быть от 4 до 12 символов, состоять из английских букв разного регистра и цифр, " +
                     "без специальных символов") - что-то поломалось, пока не смог разобраться что. При добавлении аннотации некорректный текст ответа об ошибке*/
     private String login;
