@@ -15,8 +15,8 @@ public class Film {
     private long id;
     /*@NotBlank(message = "Название фильма не может быть null")*/
     private String name;
-    @Size(max = 200)
-    @NotNull
+    /*@Size(max = 200)
+    @NotNull*/
     private String description;
     private LocalDate releaseDate;
     @Positive
