@@ -19,7 +19,7 @@ public class Film {
     @NotNull*/
     private String description;
     private LocalDate releaseDate;
-    @Positive
+    /*@Positive*/
     private double duration;
     @JsonIgnore
     private Set<Long> likes = new HashSet<>();
