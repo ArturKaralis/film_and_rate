@@ -13,7 +13,7 @@ public class Film {
 
     @PositiveOrZero
     private long id;
-    @NotBlank(message = "Название фильма не может быть null")
+    /*@NotBlank(message = "Название фильма не может быть null")*/
     private String name;
     @Size(max = 200)
     @NotNull
