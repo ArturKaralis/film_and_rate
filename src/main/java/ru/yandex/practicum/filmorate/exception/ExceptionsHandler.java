@@ -63,4 +63,5 @@ public class ExceptionsHandler {
         log.error("400 - ошибка валидации данных", ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
 }
