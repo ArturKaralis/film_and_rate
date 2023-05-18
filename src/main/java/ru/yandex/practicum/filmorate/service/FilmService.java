@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 
-import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,29 +25,28 @@ public class FilmService {
         return filmStorage.getAll();
     }
 
-    public Film createFilm(@Valid Film film) {
+    public Film createFilm(Film film) {
         validateFilm(film);
         log.info("Фильм '{}' с id '{}' был успешно добавлен.", film.getName(), film.getId());
         return filmStorage.create(film);
     }
 
-    public Film updateFilm(@Valid Film film) {
-        filmStorage.update(film);
-        if (filmStorage.getById(film.getId()) == null) {
+    public Film updateFilm(Film film) {
+        if (getFilmById(film.getId()) == null) {
             log.warn("Запрос на обновление фильма с id '{}' отклонён. Он отсутствует в списке фильмов.", film.getId());
             throw new ObjectNotFoundException(film.getName(), film.getId());
         }
         validateFilm(film);
+        filmStorage.update(film);
         return film;
     }
 
     public Film getFilmById(long id) {
-        if (filmStorage.getById(id) != null) {
-            return filmStorage.getById(id);
-        } else {
-            log.warn("Фильм не найден. Передан отсутствующий id фильма");
+        Film film = filmStorage.getById(id);
+        if (film == null) {
             throw new ObjectNotFoundException("Фильм", id);
         }
+        return film;
     }
 
     public Film deleteFilmById(long id) {
@@ -83,9 +81,6 @@ public class FilmService {
 
     public List<Film> getTopFilms(Integer count) {
         List<Film> allFilms = filmStorage.getAll();
-        /*if (count == 10) {
-            return allFilms.stream().limit(10).collect(Collectors.toList());
-        }*/
         return allFilms.stream()
                 .sorted((a, b) -> b.getRate() - a.getRate())
                 .limit(count)

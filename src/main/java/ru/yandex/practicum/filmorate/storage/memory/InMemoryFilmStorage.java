@@ -27,11 +27,8 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film getById(long id) {
-        if (storageFilms.get(id) != null) {
-            log.info("Запрошен фильм с id '{}' ", id);
-            return storageFilms.get(id);
-        }
-        return null;
+        log.info("Запрошен фильм с id '{}' ", id);
+        return storageFilms.get(id);
     }
 
     @Override
@@ -47,21 +44,14 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film update(Film film) {
-        if (storageFilms.containsKey(film.getId())) {
-            storageFilms.put(film.getId(), film);
-            log.info("Фильм '{}' с id '{}' был успешно обновлён.", film.getName(), film.getId());
-            return film;
-        }
-        return null;
+        storageFilms.put(film.getId(), film);
+        log.info("Фильм '{}' с id '{}' был успешно обновлён.", film.getName(), film.getId());
+        return film;
     }
 
     @Override
     public Film delete(long id) {
-        if (storageFilms.get(id) != null) {
-            Film film = storageFilms.remove(id);
-            log.info("Запрошено удаление фильма с id '{}'", id);
-            return film;
-        }
-        return null;
+        log.info("Запрошено удаление фильма с id '{}'", id);
+        return storageFilms.remove(id);
     }
 }

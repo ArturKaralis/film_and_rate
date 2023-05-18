@@ -1,6 +1,10 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -8,6 +12,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Validated
 public class Film {
 
     @PositiveOrZero
@@ -18,9 +25,10 @@ public class Film {
     @NotNull
     private String description;
     private LocalDate releaseDate;
-    @Positive
+    @Positive(message = "Продолжительность фильма должна быть положительной!")
     private double duration;
 
+    @JsonIgnore
     private Set<Long> likes = new HashSet<>();
 
     public int getRate() {

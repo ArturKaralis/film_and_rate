@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.model.User;
-import org.springframework.http.HttpStatus;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -24,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus()
     public Collection<User> getUsers() {
         return userService.getUsers();
     }

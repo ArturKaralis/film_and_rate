@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.storage.memory;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -30,41 +29,28 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getById(long id) {
-        if (storageUsers.containsKey(id)) {
-            log.info("Запрошен пользователь с id '{}'", id);
-            return storageUsers.get(id);
-        } else {
-            throw new ObjectNotFoundException("пользователь ", id);
-        }
+        log.info("Запрошен пользователь с id '{}'", id);
+        return storageUsers.get(id);
     }
 
     @Override
     public User create(User user) {
-        if (user != null) {
             user.setId(generateId());
             storageUsers.put(user.getId(), user);
             log.info("Пользователь '{}' с id '{}' был успешно добавлен.", user.getName(), user.getId());
             return user;
-        }
-        return null;
     }
 
     @Override
     public User update(User user) {
-        if (storageUsers.containsKey(user.getId())) {
-            storageUsers.put(user.getId(), user);
-            log.info("Пользователь '{}' с id '{}' был успешно обновлён.", user.getName(), user.getId());
-            return user;
-        }
+        storageUsers.put(user.getId(), user);
+        log.info("Пользователь '{}' с id '{}' был успешно обновлён.", user.getName(), user.getId());
         return user;
     }
 
     @Override
     public User delete(long id) {
-        if (storageUsers.get(id) != null) {
-            log.info("Запрос на удаление пользователя с id '{}'", id);
-            return storageUsers.remove(id);
-        }
-        return null;
+         log.info("Запрос на удаление пользователя с id '{}'", id);
+         return storageUsers.remove(id);
     }
 }
