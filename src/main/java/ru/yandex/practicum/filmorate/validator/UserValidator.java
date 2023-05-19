@@ -16,7 +16,7 @@ public class UserValidator {
             log.info("Пользователь не указал имя");
             user.setName(user.getLogin());
         }
-        /*if (user == null) {
+        if (user == null) {
             log.warn("Валидация не пройдена");
             throw new ValidationException("Пользователь не передан");
         }
@@ -31,6 +31,6 @@ public class UserValidator {
         if (user.getBirthday() == null || user.getBirthday().isAfter(currentDate)) {
             log.warn("Валидация не пройдена");
             throw new ValidationException("Дата рождения не может быть в будущем");
-        }*/
+        }
     }
 }
