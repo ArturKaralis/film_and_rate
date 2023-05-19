@@ -91,7 +91,7 @@ public class UserService {
     public List<User> getMutualFriends(long id, long friendId) {
         User user = userStorage.getById(id);
         User friend = userStorage.getById(friendId);
-        if (user == null || friend == null || (friendId <= 0) || (id <= 0) ) {
+        if (user == null || friend == null || (friendId <= 0) || (id <= 0)) {
             throw new ValidationException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден");
         }
         Set<Long> friendsUser = user.getFriends();
