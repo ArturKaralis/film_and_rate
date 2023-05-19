@@ -31,30 +31,37 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(ObjectNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleObjectNotFound(ObjectNotFoundException exception) {
+    public ErrorResponse handleObjectNotFound(ObjectNotFoundException exception) {
         log.error("404 - Искомый объект не найден", exception);
-        return Map.of("Искомый объект не найден", exception.getMessage());
+        return new ErrorResponse(exception.getMessage());
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(NullPointerException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNullPointerException(NullPointerException ex) {
+        log.error("404 - Что-то пошло не так", ex);
+        return new ErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleInternalErrors(Exception exception) {
+    public ErrorResponse handleInternalErrors(Exception exception) {
         log.error("500 - Внутренняя ошибка сервера", exception);
-        return Map.of("Внутрення ошибка сервера", exception.getMessage());
+        return new ErrorResponse(exception.getMessage());
     }
 
     @ExceptionHandler(EmptyObjectException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleEmptyObject(EmptyObjectException exception) {
+    public ErrorResponse handleEmptyObject(EmptyObjectException exception) {
         log.error("404 - Передаваемый объект пуст", exception);
-        return Map.of("Переданный объект пуст", exception.getMessage());
+        return new ErrorResponse(exception.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleConstraintViolation(ConstraintViolationException ex) {
+    public ErrorResponse handleConstraintViolation(ConstraintViolationException ex) {
         log.error("400 - передано некорректное значение рейтинга", ex);
-    return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -63,4 +70,5 @@ public class ExceptionsHandler {
         log.error("400 - ошибка валидации данных", ex);
         return new ErrorResponse(ex.getFieldError().toString());
     }
+
 }

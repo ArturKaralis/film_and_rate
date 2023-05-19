@@ -87,10 +87,4 @@ public class FilmValidatorTest {
         assertThrows(ValidationException.class, () -> FilmValidator.validateFilm(film));
     }
 
-    /*@Test
-    void shouldNotValidatePassedToMethodNull() {
-        Film film = new Film(1, "Кораблик", "Приключения", LocalDate.of(2022, 12, 28), 1);
-        assertThrows(ValidationException.class, () -> FilmValidator.validateFilm(film));
-    }*/
-
 }

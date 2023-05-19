@@ -23,7 +23,6 @@ public class UserController {
     }
 
     @GetMapping
-    @ResponseStatus()
     public Collection<User> getUsers() {
         return userService.getUsers();
     }

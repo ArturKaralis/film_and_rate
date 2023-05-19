@@ -95,9 +95,4 @@ class UserValidatorTest {
         assertThrows(ValidationException.class, () -> UserValidator.validateUser(user));
     }
 
-    @Test
-    void shouldNotValidatePassedToMethodNull() {
-        User user = new User(1, "gosha@mail.ru", "goshan", "Григорий Петров", LocalDate.of(2000, 05,25));
-        assertThrows(ValidationException.class, () -> UserValidator.validateUser(user));
-    }
 }

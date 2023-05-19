@@ -3,8 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.Storage;
 
@@ -21,6 +20,7 @@ import static ru.yandex.practicum.filmorate.validator.UserValidator.validateUser
 public class UserService {
     private final Storage<User> userStorage;
     private long uniqId;
+    private UserService users;
 
     public long generateId() {
         return ++uniqId;
@@ -37,11 +37,6 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        if (getUserById(user.getId()) == null) {
-            log.warn("Запрос на обновление пользователя с id '{}' отклонён. Он отсутствует в списке пользователей.",
-                    user.getId());
-            throw new ObjectNotFoundException("Список пользователей не содержит такого ID", user.getId());
-        }
         validateUser(user);
         return userStorage.update(user);
     }
@@ -62,7 +57,7 @@ public class UserService {
         User user = userStorage.getById(id);
         User friend = userStorage.getById(friendId);
         if (user == null || friend == null) {
-            throw new ValidationException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден");
+            throw new NullPointerException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден");
         }
         Set<Long> friendsUser = user.getFriends();
         Set<Long> friendsFriend = friend.getFriends();
@@ -95,11 +90,10 @@ public class UserService {
     }
 
     public List<User> getMutualFriends(long id, long friendId) {
-        List<User> mutualFriends = new ArrayList<>();
         User user = userStorage.getById(id);
         User friend = userStorage.getById(friendId);
-        if (user == null || friend == null) {
-            throw new ObjectNotFoundException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден", id);
+        if (user == null || friend == null || (friendId <= 0) || (id <= 0) ) {
+            throw new ValidationException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден");
         }
         Set<Long> friendsUser = user.getFriends();
         Set<Long> friendsFriend = friend.getFriends();

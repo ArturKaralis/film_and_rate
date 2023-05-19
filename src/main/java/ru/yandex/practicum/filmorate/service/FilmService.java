@@ -32,13 +32,8 @@ public class FilmService {
     }
 
     public Film updateFilm(Film film) {
-        if (getFilmById(film.getId()) == null) {
-            log.warn("Запрос на обновление фильма с id '{}' отклонён. Он отсутствует в списке фильмов.", film.getId());
-            throw new ObjectNotFoundException(film.getName(), film.getId());
-        }
         validateFilm(film);
-        filmStorage.update(film);
-        return film;
+        return filmStorage.update(film);
     }
 
     public Film getFilmById(long id) {
@@ -50,8 +45,9 @@ public class FilmService {
     }
 
     public Film deleteFilmById(long id) {
-        if (filmStorage.delete(id) != null) {
-            return filmStorage.delete(id);
+        Film film = filmStorage.delete(id);
+        if (film != null) {
+            return film;
         } else {
             log.warn("Фильм не найден. Передан отсутствующий id фильма");
             throw new ObjectNotFoundException("Фильм", id);
