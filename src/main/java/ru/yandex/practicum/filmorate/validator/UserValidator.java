@@ -9,7 +9,8 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 
 import java.time.LocalDate;
 
-public class UserValidator extends ValidationException{
+public class UserValidator extends ValidationException {
+
     private static final Logger log = LoggerFactory.getLogger(UserValidator.class);
     private static LocalDate currentDate = LocalDate.now();
 
