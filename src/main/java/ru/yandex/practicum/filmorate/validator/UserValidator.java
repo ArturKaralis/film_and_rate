@@ -24,7 +24,7 @@ public class UserValidator {
             log.warn("Валидация не пройдена");
             throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @");
         }
-        if (!StringUtils.hasText(user.getLogin()) || user.getLogin().contains(" ") || user.getLogin().length()>12) {
+        if (!StringUtils.hasText(user.getLogin()) || user.getLogin().contains(" ") || user.getLogin().length() > 12) {
             log.warn("Валидация не пройдена");
             throw new ValidationException("Логин не может быть пустым и содержать пробелы");
         }
