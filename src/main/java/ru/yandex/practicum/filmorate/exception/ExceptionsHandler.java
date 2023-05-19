@@ -59,8 +59,8 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+    public ErrorResponse handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         log.error("400 - ошибка валидации данных", ex);
-        return new ResponseEntity<>("Передано значение не удовлетворяющее ограничениям!", HttpStatus.BAD_REQUEST);
+        return new ErrorResponse(ex.getFieldError().toString());
     }
 }
