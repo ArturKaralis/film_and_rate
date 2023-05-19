@@ -62,7 +62,7 @@ public class UserService {
         User user = userStorage.getById(id);
         User friend = userStorage.getById(friendId);
         if (user == null || friend == null) {
-            throw new ValidationException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден");
+            throw new NullPointerException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден");
         }
         Set<Long> friendsUser = user.getFriends();
         Set<Long> friendsFriend = friend.getFriends();
