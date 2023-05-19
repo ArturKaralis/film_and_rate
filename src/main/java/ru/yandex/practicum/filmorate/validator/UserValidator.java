@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 
 import java.time.LocalDate;
 
