@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,18 +28,18 @@ public class ExceptionsHandler {
         return Map.of(exception.getDescription(), exception.getMessage());
     }
 
-    @ExceptionHandler(ObjectNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleObjectNotFound(ObjectNotFoundException exception) {
-        log.error("404 - Искомый объект не найден", exception);
-        return new ErrorResponse(exception.getMessage());
-    }
-
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNullPointerException(NullPointerException ex) {
         log.error("404 - Что-то пошло не так", ex);
         return new ErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(ObjectNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleObjectNotFound(ObjectNotFoundException exception) {
+        log.error("404 - Искомый объект не найден", exception);
+        return new ErrorResponse(exception.getMessage());
     }
 
     @ExceptionHandler

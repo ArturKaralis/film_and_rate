@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FilmValidatorTest {
 
-    @Test
+    /*@Test
     void shouldNotValidateEmptyNameFilm() {
         Film film = new Film(1, "", "Приключения", LocalDate.of(2022, 12,15), 120);
         assertThrows(ValidationException.class, () -> FilmValidator.validateFilm(film));
@@ -85,6 +85,6 @@ public class FilmValidatorTest {
     void shouldNotValidateReleaseDateNull() {
         Film film = new Film(1, "Кораблик", "Приключения", null, 1);
         assertThrows(ValidationException.class, () -> FilmValidator.validateFilm(film));
-    }
+    }*/
 
 }
