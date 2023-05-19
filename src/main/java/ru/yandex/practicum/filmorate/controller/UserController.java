@@ -23,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping
-    @ResponseStatus()
+    @ResponseStatus(HttpStatus.OK)
     public Collection<User> getUsers() {
         return userService.getUsers();
     }
