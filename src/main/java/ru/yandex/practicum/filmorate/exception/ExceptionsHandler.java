@@ -29,6 +29,13 @@ public class ExceptionsHandler {
         return Map.of(exception.getDescription(), exception.getMessage());
     }
 
+    @ExceptionHandler(NullPointerException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNullPointerException(NullPointerException ex) {
+        log.error("404 - Что-то пошло не так", ex);
+        return new ErrorResponse(ex.getMessage());
+    }
+
     @ExceptionHandler(ObjectNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleObjectNotFound(ObjectNotFoundException exception) {
