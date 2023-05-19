@@ -19,7 +19,7 @@ public class User {
 
     @PositiveOrZero
     private long id;
-    @Email
+    @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Email не корректный")
     @NotBlank
     @Pattern(regexp = "^\\S*",
             message = "Email не может быть null")

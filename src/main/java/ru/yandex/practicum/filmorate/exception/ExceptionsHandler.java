@@ -15,53 +15,52 @@ import java.util.Map;
 @RestControllerAdvice
 public class ExceptionsHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler(DateValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleIncorrectDate(DateValidationException exception) {
         log.warn("400 - Некорректная дата обрабатываемого объекта", exception);
         return Map.of(exception.getDescription(), exception.getMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(IncorrectPathDataException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleIncorrectPathData(IncorrectPathDataException exception) {
         log.error("400 - Обнаружены некорректные данные в запросе", exception);
         return Map.of(exception.getDescription(), exception.getMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(ObjectNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleObjectNotFound(ObjectNotFoundException exception) {
         log.error("404 - Искомый объект не найден", exception);
         return Map.of("Искомый объект не найден", exception.getMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> handleInternalErrors(Exception exception) {
         log.error("500 - Внутренняя ошибка сервера", exception);
         return Map.of("Внутрення ошибка сервера", exception.getMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(EmptyObjectException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleEmptyObject(EmptyObjectException exception) {
         log.error("404 - Передаваемый объект пуст", exception);
         return Map.of("Переданный объект пуст", exception.getMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> countErrorPopular(ConstraintViolationException ex) {
+    public ResponseEntity<String> handleConstraintViolation(ConstraintViolationException ex) {
         log.error("400 - передано некорректное значение рейтинга", ex);
     return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> countErrorPopular(MethodArgumentNotValidException ex) {
+    public ResponseEntity<String> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         log.error("400 - ошибка валидации данных", ex);
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Передано значение не удовлетворяющее ограничениям!", HttpStatus.BAD_REQUEST);
     }
-
 }
