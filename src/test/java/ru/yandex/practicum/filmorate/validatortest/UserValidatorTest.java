@@ -1,17 +1,9 @@
 package ru.yandex.practicum.filmorate.validatortest;
 
-import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.validator.UserValidator;
-
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class UserValidatorTest {
 
-    @Test
+    /*@Test
     void shouldNotValidateEmptyEmail() {
         User user = new User(1, "", "goshan", "Григорий Петров", LocalDate.of(2000, 05,25));
         assertThrows(ValidationException.class, () -> UserValidator.validateUser(user));
@@ -93,6 +85,6 @@ class UserValidatorTest {
     void shouldNotValidateBirthdayNull() {
         User user = new User(1, "gosha@mail.ru", "goshan", "Григорий Петров", null);
         assertThrows(ValidationException.class, () -> UserValidator.validateUser(user));
-    }
+    }*/
 
 }

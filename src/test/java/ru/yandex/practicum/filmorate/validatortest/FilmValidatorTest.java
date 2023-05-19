@@ -1,18 +1,6 @@
 package ru.yandex.practicum.filmorate.validatortest;
 
 
-import net.bytebuddy.utility.RandomString;
-import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
-
-import ru.yandex.practicum.filmorate.validator.FilmValidator;
-
-import java.time.LocalDate;
-
-
-import static org.junit.jupiter.api.Assertions.*;
-
 public class FilmValidatorTest {
 
     /*@Test
