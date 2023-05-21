@@ -38,7 +38,7 @@ public class UserService {
     public User updateUser(User user) {
         getUserById(user.getId());
         validateUser(user);
-            return userStorage.update(user);
+        return userStorage.update(user);
     }
 
     public User getUserById(long id) {
@@ -85,7 +85,7 @@ public class UserService {
             throw new ValidationException("Пользователь с Id " + id + " не найден");
         }
         return user.getFriends().stream()
-                .map(u -> userStorage.getById(u))
+                .map(userStorage::getById)
                 .collect(Collectors.toList());
     }
 
