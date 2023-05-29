@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 @Data
 @AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Film {
 
     @PositiveOrZero

@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
@@ -15,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Validated
+@EqualsAndHashCode(of = "id")
 public class User {
 
     @PositiveOrZero
@@ -34,6 +36,4 @@ public class User {
     @NotNull
     private LocalDate birthday;
 
-    @JsonIgnore
-    private Set<Long> friends = new HashSet<>();
 }

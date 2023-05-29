@@ -23,18 +23,18 @@ public class MpaDbStorage implements MpaStorage {
 
     @Override
     public List<Mpa> getAll() {
-        String sqlQuery = "SELECT m.id, " +
-                "m.name " +
-                "FROM MPA_ratings AS m;";
+        String sqlQuery = "SELECT M.ID, " +
+                "M.MPA_NAME " +
+                "FROM MPA_RATINGS AS M;";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeMPA(rs));
     }
 
     @Override
     public Mpa getById(Long id) throws ValidationException {
-        String sqlQuery = "SELECT m.id, " +
-                "m.name " +
-                "FROM MPA_ratings AS m " +
-                "WHERE m.id = ?;";
+        String sqlQuery = "SELECT M.ID, " +
+                "M.MPA_NAME " +
+                "FROM MPA_RATINGS AS M " +
+                "WHERE M.ID = ?;";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeMPA(rs), id)
                 .stream()
                 .findAny()
@@ -42,8 +42,8 @@ public class MpaDbStorage implements MpaStorage {
     }
 
     private Mpa makeMPA(ResultSet rs) throws SQLException {
-        Long id = rs.getLong("id");
-        String name = rs.getString("name");
+        Long id = rs.getLong("ID");
+        String name = rs.getString("MPA_NAME");
         return new Mpa(id, name);
     }
 }

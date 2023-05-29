@@ -21,7 +21,7 @@ public class GenreDbStorage implements GenreStorage {
 
     public Genre getGenreById(Long id) {
         String sqlQuery =
-                "SELECT id, name " +
+                "SELECT id, GENRE_NAME as genreName " +
                         "FROM Genres " +
                         "WHERE id = ?";
 
@@ -36,13 +36,13 @@ public class GenreDbStorage implements GenreStorage {
         List<Genre> genreList = new ArrayList<>();
 
         SqlRowSet genreRows = jdbcTemplate.queryForRowSet(
-                "SELECT id, name " +
+                "SELECT ID, GENRE_NAME " +
                         "FROM Genres");
 
         while (genreRows.next()) {
             Genre genre = Genre.builder()
-                    .id(genreRows.getLong("genreId"))
-                    .name(genreRows.getString("name"))
+                    .id(genreRows.getLong("ID"))
+                    .name(genreRows.getString("GENRE_NAME"))
                     .build();
             genreList.add(genre);
         }
@@ -108,7 +108,7 @@ public class GenreDbStorage implements GenreStorage {
     private Genre mapRowToGenre(ResultSet resultSet, int rowNum) throws SQLException {
         return Genre.builder()
                 .id(resultSet.getLong("id"))
-                .name(resultSet.getString("name"))
+                .name(resultSet.getString("genreName"))
                 .build();
     }
 }

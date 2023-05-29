@@ -5,10 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.Storage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.validator.UserValidator.validateUser;
@@ -17,7 +16,7 @@ import static ru.yandex.practicum.filmorate.validator.UserValidator.validateUser
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final Storage<User> userStorage;
+    private final UserStorage userStorage;
     private long uniqId;
     private UserService users;
 
@@ -59,10 +58,7 @@ public class UserService {
         if (user == null || friend == null) {
             throw new NullPointerException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден");
         }
-        Set<Long> friendsUser = user.getFriends();
-        Set<Long> friendsFriend = friend.getFriends();
-        friendsUser.add(friendId);
-        friendsFriend.add(id);
+        userStorage.makeFriends(id, friendId);
     }
 
     public void deleteFriend(long id, long friendId) {
@@ -71,8 +67,8 @@ public class UserService {
         if (user == null || friend == null) {
             throw new ValidationException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден");
         }
-        Set<Long> friendsUser = user.getFriends();
-        Set<Long> friendsFriend = friend.getFriends();
+        List<User> friendsUser = userStorage.getUserFriendsById(id);
+        List<User> friendsFriend = userStorage.getUserFriendsById(friendId);
         if (friendsUser.contains(friendId)) {
             friendsUser.remove(friendId);
             friendsFriend.remove(id);
@@ -84,9 +80,7 @@ public class UserService {
         if (user == null) {
             throw new ValidationException("Пользователь с Id " + id + " не найден");
         }
-        return user.getFriends().stream()
-                .map(userStorage::getById)
-                .collect(Collectors.toList());
+        return userStorage.getUserFriendsById(id);
     }
 
     public List<User> getMutualFriends(long id, long friendId) {
@@ -95,11 +89,10 @@ public class UserService {
         if (user == null || friend == null || (friendId <= 0) || (id <= 0)) {
             throw new ValidationException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден");
         }
-        Set<Long> friendsUser = user.getFriends();
-        Set<Long> friendsFriend = friend.getFriends();
+        List<User> friendsUser = userStorage.getUserFriendsById(id);
+        List<User> friendsFriend = userStorage.getUserFriendsById(id);
         return friendsUser.stream()
                 .filter(friendsFriend::contains)
-                .map(this::getUserById)
                 .collect(Collectors.toList());
     }
 }

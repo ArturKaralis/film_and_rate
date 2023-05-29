@@ -33,31 +33,31 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getAll() {
-        String sqlQuery = "SELECT f.id, " +
-                "f.name, " +
-                "f.description, " +
-                "f.release_date, " +
-                "f.duration, " +
-                "f.mpa_id, " +
-                "m.name AS mpa_name " +
-                "FROM films AS f " +
-                "JOIN MPA_ratings AS m ON m.id = f.mpa_id;";
+        String sqlQuery = "SELECT F.FILM_ID, " +
+                "F.FILM_NAME, " +
+                "F.DESCRIPTION, " +
+                "F.RELEASE_DATE, " +
+                "F.DURATION, " +
+                "F.MPA_ID, " +
+                "M.MPA_NAME " +
+                "FROM FILMS AS F " +
+                "JOIN MPA_RATINGS AS M ON M.MPA_ID = F.MPA_ID;";
 
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeFilm(rs, genreService));
     }
 
     @Override
     public Film getById(long id) throws ValidationException {
-        String sqlQuery = "SELECT f.id, " +
-                "f.name, " +
-                "f.description, " +
-                "f.release_date, " +
-                "f.duration, " +
-                "f.mpa_id, " +
-                "m.name AS mpa_name " +
-                "FROM films AS f " +
-                "JOIN MPA_ratings AS m ON m.id = f.mpa_id " +
-                "WHERE f.id = ?;";
+        String sqlQuery = "SELECT F.FILM_ID, " +
+                "F.FILM_NAME, " +
+                "F.DESCRIPTION, " +
+                "F.RELEASE_DATE, " +
+                "F.DURATION, " +
+                "F.MPA_ID, " +
+                "M.MPA_NAME " +
+                "FROM FILMS AS f " +
+                "JOIN MPA_RATINGS AS M ON M.MPA_ID = F.MPA_ID " +
+                "WHERE F.FILM_ID = ?;";
 
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeFilm(rs, genreService), id)
                 .stream()
@@ -67,7 +67,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film create(Film film) {
-        String sqlQuery = "INSERT INTO films (name, description, release_date, duration, mpa_id) " +
+        String sqlQuery = "INSERT INTO FILMS (FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID) " +
                 "VALUES (?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -86,9 +86,9 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film update(Film film) {
-        String sqlQuery = "UPDATE films " +
-                "SET name = ?, description = ?, release_date = ?, duration = ?, mpa_id = ? " +
-                "WHERE id = ?;";
+        String sqlQuery = "UPDATE FILMS " +
+                "SET FILM_NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, MPA_ID = ? " +
+                "WHERE FILM_ID = ?;";
         jdbcTemplate.update(
                 sqlQuery,
                 film.getName(),
@@ -103,34 +103,34 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film delete(long filmId) {
-        String sqlQuery = "DELETE FROM films WHERE id = ?;";
+        String sqlQuery = "DELETE FROM FILMS WHERE FILM_ID = ?;";
         jdbcTemplate.update(sqlQuery, filmId);
         return null;
     }
 
     @Override
     public void addLike(Long id, Long userId) {
-        String sqlQuery = "INSERT INTO likes_list (user_id, film_id) VALUES (?, ?);";
+        String sqlQuery = "INSERT INTO LIKES_FILMS (USER_ID, FILM_ID) VALUES (?, ?);";
         jdbcTemplate.update(sqlQuery, userId, id);
     }
 
     @Override
     public void removeLike(Long id, Long userId) {
-        String sqlQuery = "DELETE FROM likes_list WHERE film_id = ? AND user_id = ?;";
+        String sqlQuery = "DELETE FROM LIKES_FILMS WHERE FILM_ID = ? AND USER_ID = ?;";
         jdbcTemplate.update(sqlQuery, id, userId);
     }
 
     private Film makeFilm(ResultSet rs, GenreService genreService
                           ) throws SQLException {
-        long id = rs.getLong("id");
-        String name = rs.getString("name");
-        String description = rs.getString("description");
-        LocalDate releaseDate = LocalDate.parse(rs.getDate("release_date").toString());
-        double duration = rs.getInt("duration");
+        long id = rs.getLong("FILM_ID");
+        String name = rs.getString("FILM_NAME");
+        String description = rs.getString("DESCRIPTION");
+        LocalDate releaseDate = LocalDate.parse(rs.getDate("RELEASE_DATE").toString());
+        double duration = rs.getDouble("DURATION");
         Genre genre = genreService.getGenreById(id);
         Mpa mpa = new Mpa(
-                rs.getLong("mpa_id"),
-                rs.getString("mpa_name")
+                rs.getLong("MPA_ID"),
+                rs.getString("MPA_NAME")
         );
         Film film = new Film(id, name, description, releaseDate, duration, mpa);
         film.getGenres().addAll(Collections.singleton(genre));
