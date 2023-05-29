@@ -57,7 +57,7 @@ public class UserDbStorage implements UserStorage {
                 "VALUES (?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(sqlQuery, new String[]{"id"});
+            PreparedStatement statement = connection.prepareStatement(sqlQuery, new String[]{"USER_ID"});
             statement.setString(1, user.getEmail());
             statement.setString(2, user.getLogin());
             statement.setString(3, user.getName());
@@ -71,9 +71,9 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User update(User user) {
-        String sqlQuery = "UPDATE users " +
-                "SET email = ?, login = ?, name = ?, birthday = ? " +
-                "WHERE id = ?;";
+        String sqlQuery = "UPDATE USERS " +
+                "SET EMAIL = ?, LOGIN = ?, USER_NAME = ?, BIRTHDAY = ? " +
+                "WHERE USER_ID = ?;";
         jdbcTemplate.update(
                 sqlQuery,
                 user.getEmail(),
