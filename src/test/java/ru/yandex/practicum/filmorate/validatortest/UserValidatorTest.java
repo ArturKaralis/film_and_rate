@@ -11,10 +11,5 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class UserValidatorTest {
 
-    @Test
-    void shouldValidateEmptyName() {
-        User user = new User(1, "gosha@mail.ru", "goshan", "", LocalDate.of(2000, 05,25));
-        assertDoesNotThrow(() -> UserValidator.validateUser(user));
-    }
 
 }

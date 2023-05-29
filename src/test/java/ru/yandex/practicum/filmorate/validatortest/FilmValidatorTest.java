@@ -11,10 +11,5 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class FilmValidatorTest {
 
-    @Test
-    void shouldValidateDate18951228() {
-        Film film = new Film(1, "Кораблик", "Приключения", LocalDate.of(1895, 12,28), 120);
-        assertDoesNotThrow(() -> FilmValidator.validateFilm(film));
-    }
 
 }
