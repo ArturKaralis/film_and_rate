@@ -62,7 +62,7 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeFilm(rs, genreService), id)
                 .stream()
                 .findAny()
-                .orElseThrow(() -> new ValidationException("Фильм с id=" + id + " не существует"));
+                .orElseThrow(() -> new ValidationException("Фильм с id= " + id + " не существует"));
     }
 
     @Override

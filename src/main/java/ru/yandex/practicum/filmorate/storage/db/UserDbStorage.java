@@ -27,24 +27,24 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getAll() {
-        String sqlQuery = "SELECT u.id, " +
-                "u.email, " +
-                "u.login, " +
-                "u.name, " +
-                "u.birthday, " +
-                "FROM users AS u;";
+        String sqlQuery = "SELECT U.USER_ID, " +
+                "U.EMAIL, " +
+                "U.LOGIN, " +
+                "U.USER_NAME, " +
+                "U.BIRTHDAY, " +
+                "FROM USERS AS U";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeUser(rs, rowNum));
     }
 
     @Override
     public User getById(long id) throws ObjectNotFoundException {
-        String sqlQuery = "SELECT u.id, " +
-                "u.email, " +
-                "u.login, " +
-                "u.name, " +
-                "u.birthday, " +
-                "FROM users AS u " +
-                "WHERE u.id = ?;";
+        String sqlQuery = "SELECT U.USER_ID, " +
+                "U.EMAIL, " +
+                "U.LOGIN, " +
+                "U.USER_NAME, " +
+                "U.BIRTHDAY, " +
+                "FROM USERS AS U " +
+                "WHERE U.USER_ID = ?;";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeUser(rs, rowNum), id)
                 .stream()
                 .findAny()
@@ -53,7 +53,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User create(User user) {
-        String sqlQuery = "INSERT INTO users (email, login, name, birthday) " +
+        String sqlQuery = "INSERT INTO USERS (EMAIL, LOGIN, USER_NAME, BIRTHDAY) " +
                 "VALUES (?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -87,43 +87,43 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User delete(long id) {
-        String sqlQuery = "DELETE FROM users WHERE id = ?;";
+        String sqlQuery = "DELETE FROM USERS WHERE ISER_ID = ?;";
         jdbcTemplate.update(sqlQuery, id);
         return null;
     }
 
     @Override
     public void makeFriends(Long userId, Long friendId) {
-        String sqlQuery = "INSERT INTO friendships (user_id, friend_id) VALUES (?, ?);";
+        String sqlQuery = "INSERT INTO FRIENDSHIPS (USER_ID, FRIEND_ID) VALUES (?, ?);";
         jdbcTemplate.update(sqlQuery, userId, friendId);
     }
 
     @Override
     public void removeFriends(Long userId, Long friendId) {
-        String sqlQuery = "DELETE FROM friendships WHERE user_id = ? AND friend_id = ?;";
+        String sqlQuery = "DELETE FROM FRIENDSHIPS WHERE USER_ID = ? AND FRIEND_ID = ?;";
         jdbcTemplate.update(sqlQuery, userId, friendId);
     }
 
     @Override
     public List<User> getUserFriendsById(Long userId) {
-        String sqlQuery = "select U.user_id as id," +
-                "       email as email," +
-                "       login as login," +
-                "       user_name as name," +
-                "       birthday as birthday " +
+        String sqlQuery = "select U.USE_ID," +
+                "       EMAIL," +
+                "       LOGIN," +
+                "       USER_NAME," +
+                "       BIRTHDAY " +
                 "from USERS U" +
                 "    inner join FRIENDSHIPS F on U.USER_ID = F.FRIEND_ID " +
                 "where F.USER_ID = ? " +
-                "order by id";
+                "order by USER_ID";
         return jdbcTemplate.query(sqlQuery, this::makeUser, userId);
     }
 
     private User makeUser(ResultSet rs, int rowNum) throws SQLException {
-        long id = rs.getLong("id");
-        String email = rs.getString("email");
-        String login = rs.getString("login");
-        String name = rs.getString("name");
-        LocalDate birthday = rs.getDate("birthday").toLocalDate();
+        long id = rs.getLong("USER_ID");
+        String email = rs.getString("EMAIL");
+        String login = rs.getString("LOGIN");
+        String name = rs.getString("USER_NAME");
+        LocalDate birthday = rs.getDate("BIRTHDAY").toLocalDate();
         return new User(id, email, login, name, birthday);
     }
 }
