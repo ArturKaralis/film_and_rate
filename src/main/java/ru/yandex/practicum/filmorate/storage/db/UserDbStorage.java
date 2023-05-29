@@ -20,6 +20,7 @@ import java.util.Objects;
 @Repository("userStorage")
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
+    long id;
 
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -106,7 +107,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getUserFriendsById(Long userId) {
-        String sqlQuery = "select U.USE_ID," +
+        String sqlQuery = "SELECT U.USER_ID," +
                 "       EMAIL," +
                 "       LOGIN," +
                 "       USER_NAME," +
