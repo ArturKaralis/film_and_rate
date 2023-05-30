@@ -85,15 +85,18 @@ public class UserService {
 
     public List<User> getMutualFriends(long id, long friendId) {
         User user = userStorage.getById(id);
+        if (id <= 0 || user == null) {
+            throw new ObjectNotFoundException("Пользователь с не найден ", id);
+        }
         User friend = userStorage.getById(friendId);
-        if ((friendId <= 0) || (id <= 0)) {
-            throw new ValidationException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден");
+        if (friendId <= 0 || friend == null) {
+            throw new ObjectNotFoundException("Друг с не найден ", friendId);
         }
         List<User> friendsUser = userStorage.getUserFriendsById(id);
         List<User> friendsFriend = userStorage.getUserFriendsById(id);
         if (friendsUser.size() == 0 || friendsFriend.size() == 0 || friendsUser.get(Math.toIntExact(getUserById(id).getId())) !=
                 friendsFriend.get(Math.toIntExact(getUserById(id).getId()))) {
-            throw new IncorrectPathDataException("Опа! Это совсем не друзья");
+            throw new ObjectNotFoundException("Опа! Это совсем не друзья", id);
         }
         return friendsUser.stream()
                 .filter(friendsFriend::contains)
