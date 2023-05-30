@@ -5,11 +5,12 @@ import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserStorage extends Storage<User> {
-    void makeFriends(Long userId, Long friendId);
+    Optional<List<User>> makeFriends(Long userId, Long friendId);
 
-    void removeFriends(Long userId, Long friendId);
+    Optional<List<User>> removeFriends(Long userId, Long friendId);
 
-    List<User> getUserFriendsById(Long userId) throws ObjectNotFoundException;
+    Optional<List<User>> getUserFriendsById(Long userId) throws ObjectNotFoundException;
 }

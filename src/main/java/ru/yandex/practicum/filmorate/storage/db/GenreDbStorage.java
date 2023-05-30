@@ -49,22 +49,6 @@ public class GenreDbStorage implements GenreStorage {
         return genreList;
     }
 
-    public Set<Genre> getGenreForCurrentFilm(int id) {
-        Set<Genre> genreSet = new TreeSet<>();
-
-        SqlRowSet genreRows = jdbcTemplate.queryForRowSet(
-                "SELECT filmId, genreId " +
-                        "FROM FilmGenres " +
-                        "ORDER BY genreId ASC");
-
-        while (genreRows.next()) {
-            if (genreRows.getLong("filmId") == id) {
-                genreSet.add(getGenreById(genreRows.getLong("id")));
-            }
-        }
-        return genreSet;
-    }
-
     public void addGenresForCurrentFilm(Film film) {
         if (Objects.isNull(film.getGenres())) {
             return;
@@ -77,38 +61,10 @@ public class GenreDbStorage implements GenreStorage {
         film.getGenres().forEach(g -> jdbcTemplate.update(sqlQuery, film.getId(), g.getId()));
     }
 
-    @Override
-    public void addAllToFilmId(Long filmId, List<Genre> genre) {
-
-    }
-
-    @Override
-    public void deleteAllByFilmId(Long filmId) {
-
-    }
-
-    public void updateGenresForCurrentFilm(Film film) {
-        String sqlQuery =
-                "DELETE " +
-                        "FROM FilmGenres " +
-                        "WHERE filmId = ?";
-
-        jdbcTemplate.update(sqlQuery, film.getId());
-        addGenresForCurrentFilm(film);
-    }
-
-    public void addGenreNameToFilm(Film film) {
-        if (Objects.isNull(film.getGenres())) {
-            return;
-        }
-        film.getGenres().forEach(g -> g.setName(getGenreById(g.getId()).getName()));
-    }
-
-
     private Genre mapRowToGenre(ResultSet resultSet, int rowNum) throws SQLException {
         return Genre.builder()
-                .id(resultSet.getLong("id"))
-                .name(resultSet.getString("genreName"))
+                .id(resultSet.getLong("GENRE_ID"))
+                .name(resultSet.getString("GENRE_NAME"))
                 .build();
     }
 }

@@ -13,7 +13,4 @@ public interface GenreStorage {
 
     void addGenresForCurrentFilm(Film film);
 
-    void addAllToFilmId(Long filmId, List<Genre> genre);
-
-    void deleteAllByFilmId(Long filmId);
 }

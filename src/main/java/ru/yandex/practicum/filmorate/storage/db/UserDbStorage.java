@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -16,6 +18,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Repository("userStorage")
 public class UserDbStorage implements UserStorage {
@@ -38,7 +41,8 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User getById(long id) throws ObjectNotFoundException {
+    @Transactional
+    public Optional<User> getById(long id) throws ObjectNotFoundException {
         String sqlQuery = "SELECT U.USER_ID, " +
                 "U.EMAIL, " +
                 "U.LOGIN, " +
@@ -46,10 +50,17 @@ public class UserDbStorage implements UserStorage {
                 "U.BIRTHDAY, " +
                 "FROM USERS AS U " +
                 "WHERE U.USER_ID = ?;";
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeUser(rs, rowNum), id)
-                .stream()
-                .findAny()
-                .orElseThrow(() -> new ObjectNotFoundException("Пользователь с id=" + id + " не существует", id));
+        User user;
+
+        try {
+            user = jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeUser(rs, rowNum));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
+
+        assert user != null;
+
+        return Optional.of(user);
     }
 
     @Override
@@ -71,7 +82,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User update(User user) {
+    public Optional<User> update(User user) {
         String sqlQuery = "UPDATE USERS " +
                 "SET EMAIL = ?, LOGIN = ?, USER_NAME = ?, BIRTHDAY = ? " +
                 "WHERE USER_ID = ?;";
@@ -94,19 +105,21 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public void makeFriends(Long userId, Long friendId) {
+    public Optional<List<User>> makeFriends(Long userId, Long friendId) {
         String sqlQuery = "INSERT INTO FRIENDSHIPS (USER_ID, FRIEND_ID) VALUES (?, ?);";
         jdbcTemplate.update(sqlQuery, userId, friendId);
+        return getUserFriendsById(userId);
     }
 
     @Override
-    public void removeFriends(Long userId, Long friendId) {
+    public Optional<List<User>> removeFriends(Long userId, Long friendId) {
         String sqlQuery = "DELETE FROM FRIENDSHIPS WHERE USER_ID = ? AND FRIEND_ID = ?;";
         jdbcTemplate.update(sqlQuery, userId, friendId);
+        return getUserFriendsById(userId);
     }
 
     @Override
-    public List<User> getUserFriendsById(Long userId) {
+    public Optional<List<User>> getUserFriendsById(Long userId) {
         String sqlQuery = "SELECT U.USER_ID," +
                 "       EMAIL," +
                 "       LOGIN," +
@@ -116,7 +129,7 @@ public class UserDbStorage implements UserStorage {
                 "    inner join FRIENDSHIPS F on U.USER_ID = F.FRIEND_ID " +
                 "where F.USER_ID = ? " +
                 "order by USER_ID";
-        return jdbcTemplate.query(sqlQuery, this::makeUser, userId);
+        return Optional.of(jdbcTemplate.query(sqlQuery, this::makeUser, userId));
     }
 
     private User makeUser(ResultSet rs, int rowNum) throws SQLException {

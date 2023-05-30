@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -29,9 +28,9 @@ public class Film {
     private double duration;
 
     private Mpa mpa;
-    private final List<Genre> genres = new ArrayList<>();
+    private Set<Genre> genres;
     @JsonIgnore
-    private Set<Like> likes;
+    private Set<Long> likes;
 
     public Film(long id, String name, String description, LocalDate releaseDate, double duration, Mpa mpa) {
         this.id = id;
@@ -47,8 +46,11 @@ public class Film {
     }
 
 
-    public Set<Like> getLikes() {
+    public Set<Long> getLikes() {
         return likes;
     }
 
+    public Set<Genre> setGenres() {
+        return genres;
+    }
 }

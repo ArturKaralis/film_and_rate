@@ -28,9 +28,4 @@ public class GenreService {
     public List<Genre> findAll() {
         return genreDbStorage.findAll();
     }
-
-    public void updateForFilm(Long filmId, List<Genre> genres) {
-        genreStorage.deleteAllByFilmId(filmId);
-        genreStorage.addAllToFilmId(filmId, genres);
-    }
 }
