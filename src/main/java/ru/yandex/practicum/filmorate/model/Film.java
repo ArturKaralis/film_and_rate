@@ -1,16 +1,16 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @EqualsAndHashCode(of = "id")
 public class Film {
 
@@ -27,9 +27,7 @@ public class Film {
     private double duration;
 
     private Mpa mpa;
-    private Set<Genre> genres;
-    @JsonIgnore
-    private Set<Long> likes;
+    private Set<Genre> genres = new LinkedHashSet<>();
 
     public Film(long id, String name, String description, LocalDate releaseDate, double duration, Mpa mpa) {
         this.id = id;
@@ -40,16 +38,14 @@ public class Film {
         this.mpa = mpa;
     }
 
-    public int getRate() {
-        return likes.size();
-    }
+    public Map<String, Object> toMap() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("FILM_NAME", name);
+        values.put("DESCRIPTION", description);
+        values.put("MPA_ID", mpa.getId());
+        values.put("RELEASE_DATE", releaseDate);
+        values.put("DURATION", duration);
 
-
-    public Set<Long> getLikes() {
-        return likes;
-    }
-
-    public Set<Genre> setGenres() {
-        return genres;
+        return values;
     }
 }

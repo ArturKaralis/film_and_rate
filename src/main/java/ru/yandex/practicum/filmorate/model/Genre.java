@@ -1,22 +1,42 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.*;
-import org.springframework.validation.annotation.Validated;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.validation.constraints.NotNull;
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum Genre {
+    COMEDY(1, "Комедия"),
+    DRAMA(2, "Драма"),
+    CARTOON(3, "Мультфильм"),
+    THRILLER(4, "Триллер"),
+    DOCUMENTARY(5, "Документальный"),
+    ACTION(6, "Боевик");
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Validated
-@Builder(toBuilder = true)
-@EqualsAndHashCode(exclude = "name")
-public class Genre {
+    private final int id;
+    private final String name;
 
-    @NotNull
-    private Long id;
-    @NotNull
-    private String name;
+    Genre(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
+    public String getName() {
+        return name;
+    }
 
+    public int getId() {
+        return id;
+    }
+
+    @JsonCreator
+    public static Genre forValues(@JsonProperty("id")int id) {
+        for (Genre genre : Genre.values()) {
+            if (genre.id == id) {
+                return genre;
+            }
+        }
+
+        return null;
+    }
 }

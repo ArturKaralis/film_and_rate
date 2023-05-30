@@ -2,14 +2,12 @@ package ru.yandex.practicum.filmorate.storage.db;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -17,7 +15,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Repository("userStorage")
@@ -30,76 +27,71 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public List<User> getAll() {
-        String sqlQuery = "SELECT U.USER_ID, " +
-                "U.EMAIL, " +
-                "U.LOGIN, " +
-                "U.USER_NAME, " +
-                "U.BIRTHDAY, " +
-                "FROM USERS AS U";
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeUser(rs, rowNum));
+    public Optional<List<User>> getAll() {
+        String sqlQuery = "SELECT USER_ID, " +
+                "EMAIL, " +
+                "LOGIN, " +
+                "USER_NAME, " +
+                "BIRTHDAY " +
+                "FROM USERS";
+        return Optional.of(jdbcTemplate.query(sqlQuery, this::makeUser));
     }
 
     @Override
     @Transactional
     public Optional<User> getById(long id) throws ObjectNotFoundException {
-        String sqlQuery = "SELECT U.USER_ID, " +
-                "U.EMAIL, " +
-                "U.LOGIN, " +
-                "U.USER_NAME, " +
-                "U.BIRTHDAY, " +
-                "FROM USERS AS U " +
-                "WHERE U.USER_ID = ?;";
+        String sqlQuery = "SELECT USER_ID, " +
+                "EMAIL, " +
+                "LOGIN, " +
+                "USER_NAME, " +
+                "BIRTHDAY " +
+                "FROM USERS " +
+                "WHERE USER_ID = ?;";
         User user;
-
         try {
-            user = jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeUser(rs, rowNum));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sqlQuery, this::makeUser, id));
         } catch (DataAccessException e) {
             return Optional.empty();
         }
-
-        assert user != null;
-
-        return Optional.of(user);
     }
 
     @Override
-    public User create(User user) {
-        String sqlQuery = "INSERT INTO USERS (EMAIL, LOGIN, USER_NAME, BIRTHDAY) " +
-                "VALUES (?, ?, ?, ?);";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(sqlQuery, new String[]{"USER_ID"});
-            statement.setString(1, user.getEmail());
-            statement.setString(2, user.getLogin());
-            statement.setString(3, user.getName());
-            statement.setDate(4, Date.valueOf(user.getBirthday()));
-            return statement;
-        }, keyHolder);
+    public Optional<User> create(User user) {
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("USERS")
+                .usingGeneratedKeyColumns("USER_ID");
 
-        user.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
-        return user;
+        Long userId = simpleJdbcInsert.executeAndReturnKey(user.toMap()).longValue();
+        return getById(userId);
     }
 
     @Override
     public Optional<User> update(User user) {
         String sqlQuery = "UPDATE USERS " +
-                "SET EMAIL = ?, LOGIN = ?, USER_NAME = ?, BIRTHDAY = ? " +
+                "SET EMAIL = ?, " +
+                "LOGIN = ?, " +
+                "USER_NAME = ?, " +
+                "BIRTHDAY = ? " +
                 "WHERE USER_ID = ?;";
-        jdbcTemplate.update(
-                sqlQuery,
-                user.getEmail(),
-                user.getLogin(),
-                user.getName(),
-                user.getBirthday(),
-                user.getId()
-        );
+        try {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement statement = connection.prepareStatement(sqlQuery);
+                statement.setString(1, user.getEmail());
+                statement.setString(2, user.getLogin());
+                statement.setString(3, user.getName());
+                statement.setDate(4, Date.valueOf(user.getBirthday()));
+                statement.setLong(5, user.getId());
+                return statement;
+            });
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
         return getById(user.getId());
     }
 
     @Override
     public User delete(long id) {
-        String sqlQuery = "DELETE FROM USERS WHERE ISER_ID = ?;";
+        String sqlQuery = "DELETE FROM USERS WHERE USER_ID = ?;";
         jdbcTemplate.update(sqlQuery, id);
         return null;
     }

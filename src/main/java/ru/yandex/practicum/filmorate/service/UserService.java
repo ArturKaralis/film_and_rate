@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.validator.UserValidator.validateUser;
@@ -27,13 +28,13 @@ public class UserService {
     }
 
     public List<User> getUsers() {
-        return userStorage.getAll();
+        return userStorage.getAll().orElseThrow();
     }
 
     public User createUser(User user) {
         validateUser(user);
         log.info("Пользователь '{}' с id '{}' был успешно добавлен.", user.getName(), user.getId());
-        return userStorage.create(user);
+        return userStorage.create(user).orElseThrow();
     }
 
     public User updateUser(User user) {
@@ -44,7 +45,8 @@ public class UserService {
     }
 
     public User getUserById(long id) {
-        return userStorage.getById(id).orElseThrow(() ->
+        Optional<User> user = userStorage.getById(id);
+        return user.orElseThrow(() ->
                 new ObjectNotFoundException("Пользователь с ID %s не найден", id));
     }
 

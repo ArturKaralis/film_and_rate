@@ -8,6 +8,8 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -33,4 +35,13 @@ public class User {
     @NotNull
     private LocalDate birthday;
 
+    public Map<String,?> toMap() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("USER_NAME", name);
+        values.put("LOGIN", login);
+        values.put("BIRTHDAY", birthday);
+        values.put("EMAIL", email);
+
+        return values;
+    }
 }
