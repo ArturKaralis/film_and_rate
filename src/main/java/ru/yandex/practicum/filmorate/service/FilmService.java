@@ -21,12 +21,10 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
 
-    private final GenreService genreService;
-
     private final LikeStorage likeStorage;
 
     public List<Film> getFilms() {
-        return filmStorage.getAll().orElseThrow();
+        return filmStorage.getAll();
     }
 
     public Film createFilm(Film film) {

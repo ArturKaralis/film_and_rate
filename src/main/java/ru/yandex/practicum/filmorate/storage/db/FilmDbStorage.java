@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -29,7 +28,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Optional<List<Film>> getAll() {
+    public List<Film> getAll() {
         String sqlQuery = "SELECT F.FILM_ID as film_id, " +
                 "F.FILM_NAME as film_name, " +
                 "F.DESCRIPTION as film_description, " +
@@ -43,7 +42,6 @@ public class FilmDbStorage implements FilmStorage {
 
         Map<Long, Film> mapFilms = films.stream()
                 .collect(Collectors.toMap(Film::getId, Function.identity()));
-
         String sqlQueryGetGenres = "select FILM_ID as id,\n" +
                 "       GENRE_NAME as genreName\n" +
                 "from GENRES_FILMS GF\n" +
@@ -57,12 +55,12 @@ public class FilmDbStorage implements FilmStorage {
                         Genre.valueOf(t.get("genreName").toString())
                 ));
 
-        return Optional.of(films);
+        return films;
     }
 
     @Override
     @Transactional
-    public Optional<Film> getById(long id) throws ValidationException {
+    public Optional<Film> getById(long id) {
         String sqlQuery = "SELECT F.FILM_ID as film_id, " +
                 "F.FILM_NAME as film_name, " +
                 "F.DESCRIPTION as film_description, " +
@@ -115,8 +113,8 @@ public class FilmDbStorage implements FilmStorage {
                 return genres.size();
             }
         });
-
-        return getById(filmId);
+        film.setId(filmId);
+        return Optional.of(film);
     }
 
     @Override
@@ -166,6 +164,7 @@ public class FilmDbStorage implements FilmStorage {
 
         return getById(film.getId());
     }
+
 
     @Override
     public Film delete(long filmId) {

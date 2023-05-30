@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -20,26 +19,25 @@ import java.util.Optional;
 @Repository("userStorage")
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
-    long id;
 
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public Optional<List<User>> getAll() {
+    public List<User> getAll() {
         String sqlQuery = "SELECT USER_ID, " +
                 "EMAIL, " +
                 "LOGIN, " +
                 "USER_NAME, " +
                 "BIRTHDAY " +
                 "FROM USERS";
-        return Optional.of(jdbcTemplate.query(sqlQuery, this::makeUser));
+        return jdbcTemplate.query(sqlQuery, this::makeUser);
     }
 
     @Override
     @Transactional
-    public Optional<User> getById(long id) throws ObjectNotFoundException {
+    public Optional<User> getById(long id) {
         String sqlQuery = "SELECT USER_ID, " +
                 "EMAIL, " +
                 "LOGIN, " +
@@ -62,7 +60,8 @@ public class UserDbStorage implements UserStorage {
                 .usingGeneratedKeyColumns("USER_ID");
 
         Long userId = simpleJdbcInsert.executeAndReturnKey(user.toMap()).longValue();
-        return getById(userId);
+        user.setId(userId);
+        return Optional.of(user);
     }
 
     @Override
@@ -86,7 +85,7 @@ public class UserDbStorage implements UserStorage {
         } catch (DataAccessException e) {
             return Optional.empty();
         }
-        return getById(user.getId());
+        return Optional.ofNullable(user);
     }
 
     @Override
@@ -100,18 +99,18 @@ public class UserDbStorage implements UserStorage {
     public Optional<List<User>> makeFriends(Long userId, Long friendId) {
         String sqlQuery = "INSERT INTO FRIENDSHIPS (USER_ID, FRIEND_ID) VALUES (?, ?);";
         jdbcTemplate.update(sqlQuery, userId, friendId);
-        return getUserFriendsById(userId);
+        return Optional.ofNullable(getUserFriendsById(userId));
     }
 
     @Override
-    public Optional<List<User>> removeFriends(Long userId, Long friendId) {
+    public List<User> removeFriends(Long userId, Long friendId) {
         String sqlQuery = "DELETE FROM FRIENDSHIPS WHERE USER_ID = ? AND FRIEND_ID = ?;";
         jdbcTemplate.update(sqlQuery, userId, friendId);
         return getUserFriendsById(userId);
     }
 
     @Override
-    public Optional<List<User>> getUserFriendsById(Long userId) {
+    public List<User> getUserFriendsById(Long userId) {
         String sqlQuery = "SELECT U.USER_ID," +
                 "       EMAIL," +
                 "       LOGIN," +
@@ -121,7 +120,7 @@ public class UserDbStorage implements UserStorage {
                 "    inner join FRIENDSHIPS F on U.USER_ID = F.FRIEND_ID " +
                 "where F.USER_ID = ? " +
                 "order by USER_ID";
-        return Optional.of(jdbcTemplate.query(sqlQuery, this::makeUser, userId));
+        return jdbcTemplate.query(sqlQuery, this::makeUser, userId);
     }
 
     private User makeUser(ResultSet rs, int rowNum) throws SQLException {

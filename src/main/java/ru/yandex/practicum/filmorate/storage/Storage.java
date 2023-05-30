@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface Storage<T> {
-    Optional<List<T>> getAll();
+    List<T> getAll();
 
     Optional<T> getById(long id);
 

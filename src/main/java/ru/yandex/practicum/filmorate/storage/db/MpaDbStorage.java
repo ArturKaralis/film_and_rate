@@ -1,13 +1,11 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
@@ -17,7 +15,6 @@ import java.util.List;
 
 @Slf4j
 @Component
-@Builder
 @RequiredArgsConstructor
 public class MpaDbStorage implements MpaStorage {
 
@@ -32,7 +29,7 @@ public class MpaDbStorage implements MpaStorage {
     }
 
     @Override
-    public Mpa getById(Long id) throws ValidationException {
+    public Mpa getById(Long id) {
         String sqlQuery = "SELECT MPA_ID, " +
                 "MPA_NAME " +
                 "FROM MPA_RATINGS " +

@@ -20,15 +20,9 @@ import static ru.yandex.practicum.filmorate.validator.UserValidator.validateUser
 @RequiredArgsConstructor
 public class UserService {
     private final UserStorage userStorage;
-    private long uniqId;
-    private UserService users;
-
-    public long generateId() {
-        return ++uniqId;
-    }
 
     public List<User> getUsers() {
-        return userStorage.getAll().orElseThrow();
+        return userStorage.getAll();
     }
 
     public User createUser(User user) {
@@ -69,13 +63,13 @@ public class UserService {
         userStorage.getById(friendId).orElseThrow(() ->
                 new ObjectNotFoundException("Пользователь с ID %s не найден", friendId));
 
-        return userStorage.removeFriends(userId, friendId).orElse(new ArrayList<>());
+        return userStorage.removeFriends(userId, friendId);
     }
 
     public List<User> getListFriends(long id) {
         userStorage.getById(id).orElseThrow(() ->
                 new ObjectNotFoundException("Пользователь с ID %s не найден", id));
-        return userStorage.getUserFriendsById(id).orElse(new ArrayList<>());
+        return userStorage.getUserFriendsById(id);
     }
 
     public List<User> getMutualFriends(long userId, long friendId) {
@@ -83,8 +77,8 @@ public class UserService {
                 new ObjectNotFoundException("Пользователь с ID %s не найден", userId));
         userStorage.getById(friendId).orElseThrow(() ->
                 new ObjectNotFoundException("Пользователь с ID %s не найден", friendId));
-        List<User> userFriends = userStorage.getUserFriendsById(userId).orElse(new ArrayList<>());
-        List<User> friendFriends = userStorage.getUserFriendsById(friendId).orElse(new ArrayList<>());
+        List<User> userFriends = userStorage.getUserFriendsById(userId);
+        List<User> friendFriends = userStorage.getUserFriendsById(friendId);
         if (userFriends.isEmpty() || friendFriends.isEmpty()) {
             return new ArrayList<>();
         }

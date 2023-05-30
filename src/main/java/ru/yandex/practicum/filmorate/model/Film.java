@@ -25,7 +25,7 @@ public class Film {
     private LocalDate releaseDate;
     @Positive (message = "Длительность фильма должна быть положительной")
     private double duration;
-
+    @NotNull
     private Mpa mpa;
     private Set<Genre> genres = new LinkedHashSet<>();
 
