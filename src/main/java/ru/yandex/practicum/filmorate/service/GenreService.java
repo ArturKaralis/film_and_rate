@@ -15,7 +15,6 @@ import java.util.List;
 public class GenreService {
 
     private final GenreStorage genreDbStorage;
-    private final GenreStorage genreStorage;
 
     public Genre getGenreById(Long genreId) {
         Genre genre = genreDbStorage.getGenreById(genreId);
