@@ -21,7 +21,6 @@ public class GenreController {
 
     @GetMapping
     public List<Genre> findAll() {
-        log.info("Получение списка всех жанров");
         return genreService.findAll();
     }
 

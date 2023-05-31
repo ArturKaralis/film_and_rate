@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FriendStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.validator.UserValidator.validateUser;
@@ -20,6 +20,7 @@ import static ru.yandex.practicum.filmorate.validator.UserValidator.validateUser
 @RequiredArgsConstructor
 public class UserService {
     private final UserStorage userStorage;
+    private final FriendStorage friendStorage;
 
     public List<User> getUsers() {
         return userStorage.getAll();
@@ -28,55 +29,51 @@ public class UserService {
     public User createUser(User user) {
         validateUser(user);
         log.info("Пользователь '{}' с id '{}' был успешно добавлен.", user.getName(), user.getId());
-        return userStorage.create(user).orElseThrow();
+        return userStorage.create(user);
     }
 
     public User updateUser(User user) {
-        getUserById(user.getId());
         validateUser(user);
-        return userStorage.update(user).orElseThrow(() ->
-                new ObjectNotFoundException("Пользователь с ID %s не найден", user.getId()));
+        getUserById(user.getId());
+        return userStorage.update(user);
     }
 
     public User getUserById(long id) {
-        Optional<User> user = userStorage.getById(id);
-        return user.orElseThrow(() ->
-                new ObjectNotFoundException("Пользователь с ID %s не найден", id));
+        userStorage.isUserExisted(id);
+        User user = userStorage.getById(id);
+        return user;
     }
 
-    public User deleteUserById(long id) {
-        return userStorage.delete(id);
+    public void deleteUserById(long id) {
+        User user = userStorage.getById(id);
+        if (user != null) {
+            userStorage.delete(id);
+        } else {
+            log.warn("Пользователь не найден. Передан отсутствующий id фильма");
+            throw new ObjectNotFoundException("Пользователь", id);
+        }
     }
 
-    public List<User> addFriend(long userId, long friendId) {
-        userStorage.getById(userId).orElseThrow(() ->
-                new ObjectNotFoundException("Пользователь с ID %s не найден", userId));
-        userStorage.getById(friendId).orElseThrow(() ->
-                new ObjectNotFoundException("Пользователь с ID %s не найден", friendId));
-
-        return userStorage.makeFriends(userId, friendId).orElse(new ArrayList<>());
+    public void addFriend(long userId, long friendId) {
+        getUserById(userId);
+        getUserById(friendId);
+        friendStorage.addFriend(userId, friendId);
     }
 
-    public List<User> deleteFriend(long userId, long friendId) {
-        userStorage.getById(userId).orElseThrow(() ->
-                new ObjectNotFoundException("Пользователь с ID %s не найден", userId));
-        userStorage.getById(friendId).orElseThrow(() ->
-                new ObjectNotFoundException("Пользователь с ID %s не найден", friendId));
-
-        return userStorage.removeFriends(userId, friendId);
+    public void deleteFriend(long userId, long friendId) {
+        getUserById(userId);
+        getUserById(friendId);
+        friendStorage.deleteFriend(userId, friendId);
     }
 
     public List<User> getListFriends(long id) {
-        userStorage.getById(id).orElseThrow(() ->
-                new ObjectNotFoundException("Пользователь с ID %s не найден", id));
+        userStorage.getById(id);
         return userStorage.getUserFriendsById(id);
     }
 
     public List<User> getMutualFriends(long userId, long friendId) {
-        userStorage.getById(userId).orElseThrow(() ->
-                new ObjectNotFoundException("Пользователь с ID %s не найден", userId));
-        userStorage.getById(friendId).orElseThrow(() ->
-                new ObjectNotFoundException("Пользователь с ID %s не найден", friendId));
+        userStorage.getById(userId);
+        userStorage.getById(friendId);
         List<User> userFriends = userStorage.getUserFriendsById(userId);
         List<User> friendFriends = userStorage.getUserFriendsById(friendId);
         if (userFriends.isEmpty() || friendFriends.isEmpty()) {

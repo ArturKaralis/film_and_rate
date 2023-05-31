@@ -4,13 +4,13 @@ import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Film {
 
@@ -27,25 +27,15 @@ public class Film {
     private double duration;
     @NotNull
     private Mpa mpa;
-    private Set<Genre> genres = new LinkedHashSet<>();
+    private LinkedHashSet<Genre> genres;
 
-    public Film(long id, String name, String description, LocalDate releaseDate, double duration, Mpa mpa) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.mpa = mpa;
-    }
 
-    public Map<String, Object> toMap() {
-        Map<String, Object> values = new HashMap<>();
-        values.put("FILM_NAME", name);
-        values.put("DESCRIPTION", description);
-        values.put("MPA_ID", mpa.getId());
-        values.put("RELEASE_DATE", releaseDate);
-        values.put("DURATION", duration);
 
-        return values;
+    public void createGenre(Genre genre) {
+        if (genres == null) {
+            genres = new LinkedHashSet<>();
+        }
+        genres.add(genre);
+
     }
 }

@@ -6,8 +6,10 @@ import java.util.List;
 
 public interface MpaStorage {
 
-    Mpa getById(Long mpaId);
+    Mpa getById(long mpaId);
 
     List<Mpa> getAll();
 
+
+    void isMpaExisted(long id);
 }

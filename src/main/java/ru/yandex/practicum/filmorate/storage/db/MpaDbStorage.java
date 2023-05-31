@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -29,7 +30,7 @@ public class MpaDbStorage implements MpaStorage {
     }
 
     @Override
-    public Mpa getById(Long id) {
+    public Mpa getById(long id) {
         String sqlQuery = "SELECT MPA_ID, " +
                 "MPA_NAME " +
                 "FROM MPA_RATINGS " +
@@ -41,7 +42,17 @@ public class MpaDbStorage implements MpaStorage {
         }
     }
 
+    @Override
+    public void isMpaExisted(long id) {
+        String sqlQuery = "SELECT MPA_NAME FROM MPA_RATINGS WHERE MPA_ID = ?";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQuery, id);
+        if (!rowSet.next()) {
+            throw new ObjectNotFoundException("Категория  с id: " + id + " не найден", id);
+        }
+    }
+
     private Mpa makeMPA(ResultSet rs, int rowNum) throws SQLException {
-        return Mpa.valueOf(rs.getString("MPA_NAME"));
+        return new Mpa(rs.getLong("MPA_ID"),
+                rs.getString("MPA_NAME"));
     }
 }
