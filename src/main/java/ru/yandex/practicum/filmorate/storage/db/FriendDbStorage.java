@@ -3,14 +3,14 @@ package ru.yandex.practicum.filmorate.storage.db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendStorage;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import java.util.*;
 
@@ -20,6 +20,7 @@ import java.util.*;
 public class FriendDbStorage implements FriendStorage {
 
     private final JdbcTemplate jdbcTemplate;
+    private String sqlForCommonAndGetAll = "SELECT * FROM USERS WHERE USER_ID IN (SELECT FRIEND_ID FROM FRIENDSHIPS WHERE USER_ID = ?) ";
 
     @Override
     public void addFriend(long id, long friendId) {
@@ -35,35 +36,19 @@ public class FriendDbStorage implements FriendStorage {
 
     @Override
     public List<User> getCommonFriends(long userId, long friendId) {
-        String sqlQuery = "SELECT * " +
-                        "FROM USERS " +
-                        "WHERE USER_ID IN (SELECT FRIEND_ID " +
-                        "                   FROM FRIENDSHIPS " +
-                        "                   WHERE USER_ID = ?) " +
+        String sqlQuery = sqlForCommonAndGetAll +
                         "AND USER_ID IN (SELECT FRIEND_ID " +
                         "                   FROM FRIENDSHIPS " +
                         "                   WHERE USER_ID = ?)";
-        SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, userId, friendId);
-        List<User> commonFriends = new ArrayList<>();
-        while (rs.next()) {
-            commonFriends.add(new User(rs.getInt("USER_ID"),
-                    rs.getString("USER_NAME"),
-                    rs.getString("LOGIN"),
-                    rs.getString("EMAIL"),
-                    Objects.requireNonNull(rs.getDate("BIRTHDAY")).toLocalDate()));
-        }
-        return commonFriends.stream().distinct().collect(Collectors.toList());
+        return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToFriends, userId, friendId);
     }
 
     @Override
-    public List<User> getAllFriends(long id) {
-        String sqlQuery = "SELECT * " +
-                "FROM USERS " +
-                "WHERE USER_ID IN " +
-                "(SELECT FRIEND_ID " +
-                "FROM FRIENDSHIPS " +
-                "WHERE USER_ID = ?)";
-        SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, id);
+    public List<List<User>> getAllFriends(long id) {
+        return jdbcTemplate.query(sqlForCommonAndGetAll, this::mapRowToFriends, id);
+    }
+
+    private List<User> mapRowToFriends(ResultSet rs, int rowNum) throws SQLException {
         List<User> friends = new ArrayList<>();
         while (rs.next()) {
             friends.add(new User(rs.getInt("USER_ID"),
@@ -72,7 +57,6 @@ public class FriendDbStorage implements FriendStorage {
                     rs.getString("EMAIL"),
                     Objects.requireNonNull(rs.getDate("BIRTHDAY")).toLocalDate()));
         }
-
         return friends;
     }
 }

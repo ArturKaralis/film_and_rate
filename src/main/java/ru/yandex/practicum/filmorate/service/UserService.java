@@ -79,6 +79,7 @@ public class UserService {
         if (userFriends.isEmpty() || friendFriends.isEmpty()) {
             return new ArrayList<>();
         }
+        //List<User> friends = friendStorage.getCommonFriends(userId, friendId);
         userFriends.retainAll(friendFriends);
         return userFriends.stream()
                 .sorted(Comparator.comparingLong(User::getId))
