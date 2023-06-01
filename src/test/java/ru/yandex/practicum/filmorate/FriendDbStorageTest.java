@@ -28,7 +28,7 @@ public class FriendDbStorageTest {
     @Order(1)
     public void testAddFriend() {
         User user1 = new User(
-                1,
+                1L,
                 "test@test.com",
                 "test",
                 "Name",
@@ -39,7 +39,7 @@ public class FriendDbStorageTest {
         assertThat(user).isNotNull();
 
         User user2 = new User(
-               2,
+               2L,
                 "friend@test.com",
                 "friend",
                 "Friend",
