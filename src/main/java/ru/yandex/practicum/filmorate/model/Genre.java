@@ -10,7 +10,7 @@ import java.util.LinkedHashSet;
 @Getter
 @Setter
 @Data
-public class Genre extends LinkedHashSet<Genre> {
+public class Genre {
 
     private final long id;
     private final String name;
