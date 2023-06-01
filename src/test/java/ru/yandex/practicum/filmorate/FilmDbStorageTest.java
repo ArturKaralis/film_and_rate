@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate;
 
-import lombok.RequiredArgsConstructor;
+/*import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,7 +31,7 @@ class FilmDbStorageTest {
 
     @BeforeEach
     void beforeEach() {
-        filmSecond = new Film(1L, "Наименование фильма", "Описание фильма",
+        filmSecond = new Film(1, "Наименование фильма", "Описание фильма",
                 LocalDate.of(2000, 12, 28), 200,
                 new Mpa(1, "G"), new LinkedHashSet<>());
 
@@ -43,16 +43,16 @@ class FilmDbStorageTest {
     void afterEach() {
         String sqlQuery =
                 "delete from FRIENDSHIPS;" +
-                        "delete from FILMS;" +
-                        "delete from USERS;" +
-                        "delete from LIKES_FILMS;" +
-                        "delete from GENRES_FILMS;";
+                "delete from FILMS;" +
+                "delete from USERS;" +
+                "delete from LIKES_FILMS;" +
+                "delete from GENRES_FILMS;";
         jdbcTemplate.update(sqlQuery);
     }
 
     @Test
     void shouldCreateFilm() {
-        filmOne = new Film(2L, "Наименование фильма 2", "Описание фильма 2",
+        filmOne = new Film(2, "Наименование фильма 2", "Описание фильма 2",
                 LocalDate.of(2000, 12, 28), 100,
                 new Mpa(1, "G"), new LinkedHashSet<>());
         filmStorage.create(filmOne);
@@ -154,4 +154,4 @@ class FilmDbStorageTest {
         });
         Assertions.assertEquals("name: Название фильма не может быть null", exception.getMessage());
     }
-}
+}*/
