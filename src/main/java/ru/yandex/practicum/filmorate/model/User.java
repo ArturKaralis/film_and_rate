@@ -35,10 +35,11 @@ public class User {
 
     public Map<String,?> toMap() {
         Map<String, Object> values = new HashMap<>();
-        values.put("USER_NAME", name);
-        values.put("LOGIN", login);
-        values.put("BIRTHDAY", birthday);
+        values.put("USER_ID", id);
         values.put("EMAIL", email);
+        values.put("LOGIN", login);
+        values.put("USER_NAME", name);
+        values.put("BIRTHDAY", birthday);
 
         return values;
     }

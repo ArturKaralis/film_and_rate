@@ -72,17 +72,17 @@ public class UserService {
     }
 
     public List<User> getMutualFriends(long userId, long friendId) {
-        userStorage.getById(userId);
+        return friendStorage.getCommonFriends(userId, friendId);
+        /*userStorage.getById(userId);
         userStorage.getById(friendId);
         List<User> userFriends = userStorage.getUserFriendsById(userId);
         List<User> friendFriends = userStorage.getUserFriendsById(friendId);
         if (userFriends.isEmpty() || friendFriends.isEmpty()) {
             return new ArrayList<>();
         }
-        //List<User> friends = friendStorage.getCommonFriends(userId, friendId);
         userFriends.retainAll(friendFriends);
         return userFriends.stream()
                 .sorted(Comparator.comparingLong(User::getId))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
     }
 }
