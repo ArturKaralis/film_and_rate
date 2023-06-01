@@ -8,10 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.validator.UserValidator.validateUser;
 
@@ -73,16 +70,5 @@ public class UserService {
 
     public List<User> getMutualFriends(long userId, long friendId) {
         return friendStorage.getCommonFriends(userId, friendId);
-        /*userStorage.getById(userId);
-        userStorage.getById(friendId);
-        List<User> userFriends = userStorage.getUserFriendsById(userId);
-        List<User> friendFriends = userStorage.getUserFriendsById(friendId);
-        if (userFriends.isEmpty() || friendFriends.isEmpty()) {
-            return new ArrayList<>();
-        }
-        userFriends.retainAll(friendFriends);
-        return userFriends.stream()
-                .sorted(Comparator.comparingLong(User::getId))
-                .collect(Collectors.toList());*/
     }
 }
