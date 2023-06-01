@@ -4,11 +4,13 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.LinkedHashSet;
+
 
 @Getter
 @Setter
 @Data
-public class Genre {
+public class Genre extends LinkedHashSet<Genre> {
 
     private final long id;
     private final String name;
