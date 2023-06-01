@@ -28,7 +28,7 @@ public class FriendDbStorageTest {
     @Order(1)
     public void testAddFriend() {
         User user1 = new User(
-                (long) 1,
+                1,
                 "test@test.com",
                 "test",
                 "Name",
@@ -39,22 +39,22 @@ public class FriendDbStorageTest {
         assertThat(user).isNotNull();
 
         User user2 = new User(
-                (long) 2,
+               2,
                 "friend@test.com",
                 "friend",
                 "Friend",
                 LocalDate.of(1993, 6, 1)
         );
         userStorage.create(user2);
-        User friend = userStorage.getById((long) 2);
+        User friend = userStorage.getById(2);
         assertThat(friend).isNotNull();
 
         friendStorage.addFriend(user.getId(), friend.getId());
 
-        user = userStorage.getById((long) 1);
+        user = userStorage.getById(1);
         assertThat(user).isNotNull();
 
-        friend = userStorage.getById((long) 2);
+        friend = userStorage.getById(2);
         assertThat(friend).isNotNull();
     }
 }

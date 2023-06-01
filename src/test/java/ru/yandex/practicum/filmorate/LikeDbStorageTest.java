@@ -35,7 +35,7 @@ public class LikeDbStorageTest {
     @Order(1)
     public void testAddLike() {
         User user = new User(
-                (long) 1,
+                1L,
                 "test@test.com",
                 "test",
                 "Name",
@@ -44,38 +44,38 @@ public class LikeDbStorageTest {
 
         userStorage.create(user);
 
-        User addedUser = userStorage.getById((long) 1);
+        User addedUser = userStorage.getById(1);
         assertThat(addedUser).isNotNull();
 
-        Mpa mpa = mpaStorage.getById((long) 1);
+        Mpa mpa = mpaStorage.getById(1);
         assertThat(mpa).isNotNull();
 
         Film film = new Film(1L, "Наименование фильма", "Описание фильма",
                 LocalDate.of(2000, 12, 28), 200,
-                new Mpa(1, "G"), new LinkedHashSet<>());
+                new Mpa(1L, "G"), new LinkedHashSet<>());
 
         filmStorage.create(film);
-        Film addedFilm = filmStorage.getById((long) 1);
+        Film addedFilm = filmStorage.getById(1);
         assertThat(addedFilm).isNotNull();
 
         likeStorage.addLike(addedFilm.getId(), addedUser.getId());
 
-        Film likedFilm = filmStorage.getById((long) 1);
+        Film likedFilm = filmStorage.getById(1);
         assertThat(likedFilm).isNotNull();
     }
 
     @Test
     @Order(2)
     public void testDeleteLike() {
-        User user = userStorage.getById((long) 1);
+        User user = userStorage.getById(1);
         assertThat(user).isNotNull();
 
-        Film film = filmStorage.getById((long) 1);
+        Film film = filmStorage.getById(1);
         assertThat(film).isNotNull();
 
         likeStorage.removeLike(film.getId(), user.getId());
 
-        Film likedFilm = filmStorage.getById((long) 1);
+        Film likedFilm = filmStorage.getById(1);
         assertThat(film).isNotNull();
     }
 }

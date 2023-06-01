@@ -42,10 +42,10 @@ class FilmDbStorageTest {
     @AfterEach
     void afterEach() {
         String sqlQuery =
-                "delete from FRIENDSHIPS;\n" +
-                        "delete from FILMS;\n" +
-                        "delete from USERS;\n" +
-                        "delete from LIKES_FILMS;\n" +
+                "delete from FRIENDSHIPS;" +
+                        "delete from FILMS;" +
+                        "delete from USERS;" +
+                        "delete from LIKES_FILMS;" +
                         "delete from GENRES_FILMS;";
         jdbcTemplate.update(sqlQuery);
     }
