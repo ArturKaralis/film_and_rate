@@ -1,20 +1,19 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Validated
+@Builder
+@EqualsAndHashCode(of = "id")
 public class User {
 
     @PositiveOrZero
@@ -30,17 +29,18 @@ public class User {
                     "без специальных символов")
     private String login;
     private String name;
-    @PastOrPresent
+    @PastOrPresent(message = "Дата рождения не может быть больше текущей даты")
     @NotNull
     private LocalDate birthday;
-    @JsonIgnore
-    private Set<Long> friends = new HashSet<>();
 
-        public User(long id, String email, String login, String name, LocalDate birthday) {
-        this.id = id;
-        this.email = email;
-        this.login = login;
-        this.name = name;
-        this.birthday = birthday;
+    public Map<String,?> toMap() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("USER_ID", id);
+        values.put("EMAIL", email);
+        values.put("LOGIN", login);
+        values.put("USER_NAME", name);
+        values.put("BIRTHDAY", birthday);
+
+        return values;
     }
 }

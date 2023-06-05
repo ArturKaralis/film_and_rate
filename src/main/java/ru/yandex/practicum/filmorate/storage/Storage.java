@@ -12,5 +12,5 @@ public interface Storage<T> {
 
     T update(T object);
 
-    T delete(long id);
+    void delete(long id);
 }

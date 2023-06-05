@@ -5,11 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.Storage;
+import ru.yandex.practicum.filmorate.storage.FriendStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.validator.UserValidator.validateUser;
 
@@ -17,13 +16,8 @@ import static ru.yandex.practicum.filmorate.validator.UserValidator.validateUser
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final Storage<User> userStorage;
-    private long uniqId;
-    private UserService users;
-
-    public long generateId() {
-        return ++uniqId;
-    }
+    private final UserStorage userStorage;
+    private final FriendStorage friendStorage;
 
     public List<User> getUsers() {
         return userStorage.getAll();
@@ -36,70 +30,45 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        getUserById(user.getId());
         validateUser(user);
+        getUserById(user.getId());
         return userStorage.update(user);
     }
 
     public User getUserById(long id) {
+        userStorage.isUserExisted(id);
         User user = userStorage.getById(id);
-        if (user == null) {
-            throw new ObjectNotFoundException("Пользователь", id);
-        }
         return user;
     }
 
-    public User deleteUserById(long id) {
-        return userStorage.delete(id);
+    public void deleteUserById(long id) {
+        User user = userStorage.getById(id);
+        if (user != null) {
+            userStorage.delete(id);
+        } else {
+            log.warn("Пользователь не найден. Передан отсутствующий id фильма");
+            throw new ObjectNotFoundException("Пользователь", id);
+        }
     }
 
-    public void addFriend(long id, long friendId) {
-        User user = userStorage.getById(id);
-        User friend = userStorage.getById(friendId);
-        if (user == null || friend == null) {
-            throw new NullPointerException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден");
-        }
-        Set<Long> friendsUser = user.getFriends();
-        Set<Long> friendsFriend = friend.getFriends();
-        friendsUser.add(friendId);
-        friendsFriend.add(id);
+    public void addFriend(long userId, long friendId) {
+        getUserById(userId);
+        getUserById(friendId);
+        friendStorage.addFriend(userId, friendId);
     }
 
-    public void deleteFriend(long id, long friendId) {
-        User user = userStorage.getById(id);
-        User friend = userStorage.getById(friendId);
-        if (user == null || friend == null) {
-            throw new ValidationException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден");
-        }
-        Set<Long> friendsUser = user.getFriends();
-        Set<Long> friendsFriend = friend.getFriends();
-        if (friendsUser.contains(friendId)) {
-            friendsUser.remove(friendId);
-            friendsFriend.remove(id);
-        }
+    public void deleteFriend(long userId, long friendId) {
+        getUserById(userId);
+        getUserById(friendId);
+        friendStorage.deleteFriend(userId, friendId);
     }
 
     public List<User> getListFriends(long id) {
-        User user = userStorage.getById(id);
-        if (user == null) {
-            throw new ValidationException("Пользователь с Id " + id + " не найден");
-        }
-        return user.getFriends().stream()
-                .map(userStorage::getById)
-                .collect(Collectors.toList());
+        userStorage.getById(id);
+        return userStorage.getUserFriendsById(id);
     }
 
-    public List<User> getMutualFriends(long id, long friendId) {
-        User user = userStorage.getById(id);
-        User friend = userStorage.getById(friendId);
-        if (user == null || friend == null || (friendId <= 0) || (id <= 0)) {
-            throw new ValidationException("Пользователь с Id " + id + " не найден или друг с Id " + friendId + " не найден");
-        }
-        Set<Long> friendsUser = user.getFriends();
-        Set<Long> friendsFriend = friend.getFriends();
-        return friendsUser.stream()
-                .filter(friendsFriend::contains)
-                .map(this::getUserById)
-                .collect(Collectors.toList());
+    public List<User> getMutualFriends(long userId, long friendId) {
+        return friendStorage.getCommonFriends(userId, friendId);
     }
 }
